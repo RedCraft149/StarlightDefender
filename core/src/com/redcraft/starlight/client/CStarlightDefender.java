@@ -33,8 +33,8 @@ public class CStarlightDefender extends ApplicationAdapter {
 
     public void create() {
 
-        //Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-        //Gdx.input.setCursorCatched(true);
+        Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        Gdx.input.setCursorCatched(true);
 
         CSetup.loadAll();
         Shared.CLIENT.set(CComponents.connection, connection);
