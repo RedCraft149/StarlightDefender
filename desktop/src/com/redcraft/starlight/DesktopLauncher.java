@@ -11,6 +11,7 @@ public class DesktopLauncher {
 		config.setForegroundFPS(60);
 		config.setTitle("StarlightDefender");
 		config.setMaximized(true);
+		config.setWindowIcon("icons/16.png","icons/32.png","icons/48.png");
 		new Lwjgl3Application(new ApplicationHook(new HomeScreen()), config);
 	}
 }
