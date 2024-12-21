@@ -1,0 +1,10 @@
+prefix com.redcraft.bosconian.shared.packets.
+ChunkCreationPacket
+EntityCreationPacket
+EntityDestroyPacket
+EntityPositionPacket
+EntityRemovePacket
+PlayerPositionPacket
+PlayerRotationPacket
+PlayerShootPacket
+UniverseCreationPacket
