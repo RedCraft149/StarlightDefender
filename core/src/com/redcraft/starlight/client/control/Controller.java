@@ -14,4 +14,5 @@ public abstract class Controller implements InputHandler , Disposable {
     public abstract void reset();
     public void render(RenderSystem system) {}
     public void dispose() {}
+
 }
