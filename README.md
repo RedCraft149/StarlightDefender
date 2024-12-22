@@ -1,7 +1,7 @@
 # StarlightDefender
 A space shooter
 # Installation
-Android: Download the .apk in release/[version] and run it <br>
+Android: currently unavailable <br>
 Windows/Linux: Download the .jar file in release/[version] and run it.
 # Controls
 Desktop: <br>
