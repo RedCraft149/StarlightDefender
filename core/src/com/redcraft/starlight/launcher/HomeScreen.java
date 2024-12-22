@@ -54,7 +54,7 @@ public class HomeScreen extends ApplicationAdapter {
         table.add(server).width(elementWidth).center();
         stage.addActor(table);
 
-        Label credits = new Label("Created by RedCraft149",styles.getLabelStyle());
+        Label credits = new Label("Created by RedCraft149 - v0.2",styles.getLabelStyle());
         credits.setColor(Color.GRAY);
         credits.setPosition(Gdx.graphics.getWidth()-credits.getWidth()-10f,10f);
         stage.addActor(credits);

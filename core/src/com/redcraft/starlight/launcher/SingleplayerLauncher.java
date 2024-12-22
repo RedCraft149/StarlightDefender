@@ -1,5 +1,6 @@
 package com.redcraft.starlight.launcher;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -9,6 +10,8 @@ import com.redcraft.starlight.client.CStarlightDefender;
 import com.redcraft.starlight.server.SStarlightDefender;
 import com.redcraft.starlight.shared.Connection;
 import com.redcraft.starlight.util.Files;
+
+import java.io.PrintWriter;
 
 public class SingleplayerLauncher extends ImageButton {
 
@@ -24,12 +27,18 @@ public class SingleplayerLauncher extends ImageButton {
     }
 
     private void onClick(ChangeListener.ChangeEvent event, Actor actor) {
-        SStarlightDefender.startServerOnNewThread(Connection.local());
         try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            return;
+            SStarlightDefender.startServerOnNewThread(Connection.local());
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                return;
+            }
+            ApplicationHook.get().switchTo(new CStarlightDefender(Connection.local()));
+        } catch (Exception e) {
+            PrintWriter writer = new PrintWriter(Gdx.files.external("crash.txt").writer(false));
+            e.printStackTrace(writer);
+            writer.close();
         }
-        ApplicationHook.get().switchTo(new CStarlightDefender(Connection.local()));
     }
 }

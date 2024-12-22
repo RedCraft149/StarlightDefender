@@ -138,7 +138,7 @@ public class GameFrame extends Frame {
         controller.addController(new MobileShieldController(pci));
     }
     private void createDesktopControls(PlayerControlInterface pci) {
-        controller.addController(new DesktopControllerCatchedCursor(pci));
+        controller.addController(new DesktopController(pci));
     }
 
     @Override

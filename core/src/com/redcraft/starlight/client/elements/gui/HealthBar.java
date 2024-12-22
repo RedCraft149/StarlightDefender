@@ -18,7 +18,7 @@ public class HealthBar extends ProgressBar implements Listener {
     public HealthBar(UUID target) {
         super(Gdx.graphics.getWidth()/2f,25f,Gdx.graphics.getWidth()/2f,50f);
         setOffColor(Color.DARK_GRAY);
-        setProgress(0.75f);
+        setProgress(1f);
 
         this.target = target;
 
