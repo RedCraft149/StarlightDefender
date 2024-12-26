@@ -1,7 +1,7 @@
 # StarlightDefender
 A space shooter
 # Installation
-Android: currently unavailable <br>
+Android: Download the .apk file in release/[version] and run it. Android may show security messages because android permissions INTERNET (for Multiplayer), VIBRATE, WRITE_EXTERNAL_STORAGE and READ_EXTERNAL_STORAGE are used.
 Windows/Linux: Download the .jar file in release/[version] and run it.
 # Controls
 Desktop: <br>
