@@ -9,6 +9,9 @@ import com.redcraft.communication.server.GServer;
 import com.redcraft.starlight.server.elements.*;
 import com.redcraft.starlight.server.elements.ai.ArtificialController;
 import com.redcraft.starlight.server.elements.ai.BasicAIController;
+import com.redcraft.starlight.server.elements.spacestation.SSpaceStationGenerator;
+import com.redcraft.starlight.server.elements.spacestation.SSpaceStationGenerator2;
+import com.redcraft.starlight.server.elements.spacestation.SSpaceStationPart;
 import com.redcraft.starlight.server.packethandlers.PlayerPositionPacketHandler;
 import com.redcraft.starlight.server.packethandlers.PlayerRaiseShieldsPacketHandler;
 import com.redcraft.starlight.server.packethandlers.PlayerRotationPacketHandler;
@@ -67,6 +70,10 @@ public class StarlightDefenderClientHandler extends GClientHandler implements Pr
         universe.entityDistributor().addEntity(enemy);
 
         initialized = true;
+
+        //SSpaceStationGenerator generator = new SSpaceStationGenerator(System.currentTimeMillis(),0.4f);
+        //List<SSpaceStationPart> parts = generator.position(1,1).createSpaceStation(3);
+        //System.out.println("parts:"+ parts);
     }
 
     public void addPacketHandler(PacketHandler<?> handler) {

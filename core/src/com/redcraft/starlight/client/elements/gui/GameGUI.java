@@ -22,6 +22,7 @@ public class GameGUI implements Drawable, Disposable {
         health = new HealthBar(null);
         addElement("health",health);
         addElement("deathscreen",new DeathScreen());
+        addElement("level_cleared_screen",new LevelClearedScreen());
         addElement("score",new ScoreDisplay());
         addElement("shield",new ProgressBar(Gdx.graphics.getWidth() * 0.2f, 25,Gdx.graphics.getWidth()*0.125f,50, Color.CYAN));
         addElement("ammo",new AmmunitionDisplay());

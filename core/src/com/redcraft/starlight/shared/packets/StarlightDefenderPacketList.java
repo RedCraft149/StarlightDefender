@@ -6,11 +6,6 @@ import com.redcraft.communication.packets.GPacket;
 import com.redcraft.communication.packets.Packet;
 import com.redcraft.rlib.function.Supplier;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 public class StarlightDefenderPacketList {
     private static final PacketList packetList;
 
@@ -25,8 +20,8 @@ public class StarlightDefenderPacketList {
         addAvailablePacket(()->new MessagePacket(null));
         addAvailablePacket(EntityHealthPacket::new);
         addAvailablePacket(EntityRotationPacket::new);
-        addAvailablePacket(PlayerDeathPacket::new);
-        addAvailablePacket(RespawnTimerPacket::new);
+        addAvailablePacket(PlayerPausePacket::new);
+        addAvailablePacket(PauseTimerPacket::new);
         addAvailablePacket(HeartbeatPacket::new);
 
         addAvailablePacket(GPacket.parse("name:player_position, float:x, float:y"));
@@ -37,6 +32,7 @@ public class StarlightDefenderPacketList {
         addAvailablePacket(GPacket.parse("name:player_shield_time, float:time, boolean:active"));
         addAvailablePacket(GPacket.parse("name:player_raise_shields"));
         addAvailablePacket(GPacket.parse("name:player_ammo, int:ammo"));
+        addAvailablePacket(GPacket.parse("name:space_station_destroyed, boolean:all"));
     }
 
     public static void addAvailablePacket(Supplier<Packet> supplier) {
@@ -68,7 +64,7 @@ public class StarlightDefenderPacketList {
     public static final int PLAYER_ROTATION =       0x31;
     public static final int BULLET_SHOOT =          0x32;
     public static final int PLAYER_DEATH =          0x33;
-    public static final int RESPAWN_TIMER =         0x34;
+    public static final int PAUSE_TIMER =           0x34;
     public static final int PLAYER_SCORE =          0x35;
 
 }

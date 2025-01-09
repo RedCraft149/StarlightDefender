@@ -8,6 +8,7 @@ import com.redcraft.rlib.events.EventListener;
 public class EntityPositionHandler extends ServerListener {
     @EventListener
     public void onEntityMove(EntityPositionChangedEvent event) {
-        sendExcluding(event,new EntityPositionPacket(event.to().x, event.to().y, event.getEntity().getUUID()));
+        if(event.force()) send(new EntityPositionPacket(event.to().x, event.to().y, event.getEntity().getUUID()));
+        else sendExcluding(event,new EntityPositionPacket(event.to().x,event.to().y,event.getEntity().getUUID()));
     }
 }

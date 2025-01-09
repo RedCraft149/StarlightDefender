@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.redcraft.starlight.client.elements.CEntity;
 import com.redcraft.starlight.client.elements.CPlayer;
 import com.redcraft.starlight.client.elements.CUniverse;
+import com.redcraft.starlight.client.elements.spacestation.CSpaceStationPart;
 import com.redcraft.starlight.client.rendering.Drawable;
 import com.redcraft.starlight.client.rendering.RenderSystem;
 import com.redcraft.starlight.shared.entity.Entity;
@@ -13,17 +14,21 @@ import com.redcraft.rlib.events.EventListener;
 import com.redcraft.rlib.events.Listener;
 import com.redcraft.rlib.events.QuickEvent;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 public class MiniMap implements Drawable, Listener {
     List<CPlayer> players;
+    List<CSpaceStationPart> spaceStations;
     CPlayer self;
     float size;
     CUniverse universe;
 
     public MiniMap(List<CPlayer> players, CPlayer self, float size, CUniverse universe) {
         this.players = players;
+        this.spaceStations = new LinkedList<>();
         this.self = self;
         this.size = size;
         this.universe = universe;
@@ -45,12 +50,23 @@ public class MiniMap implements Drawable, Listener {
             Vector2 pos = position(other);
             system.solids().rect(pos.x-2,pos.y-2,5,5);
         }
+        system.solids().setColor(Color.YELLOW);
+        Iterator<CSpaceStationPart> itr = spaceStations.iterator();
+        while (itr.hasNext()){
+            CSpaceStationPart spaceStation = itr.next();
+            if(!spaceStation.exists()) {
+                itr.remove();
+                continue;
+            }
+            Vector2 pos = position(spaceStation);
+            system.solids().rect(pos.x-1,pos.y-1,3,3);
+        }
 
         system.end(RenderSystem.SOLIDS | RenderSystem.ALPHA);
     }
 
-    private Vector2 position(CPlayer player) {
-        Vector2 position = player.getPosition();
+    private Vector2 position(CEntity e) {
+        Vector2 position = e.getPosition();
         position.scl(1f/universe.width(),1f/universe.height());
         position.scl(size);
         position.add(Gdx.graphics.getWidth()-size-20,Gdx.graphics.getHeight()-size-80);
@@ -71,5 +87,13 @@ public class MiniMap implements Drawable, Listener {
         Entity e = universe.entityFinder().searchEntity(event.read("uuid", UUID.class));
         if(!(e instanceof CPlayer)) return;
         players.remove((CPlayer) e);
+    }
+
+    @EventListener
+    public void onSpaceStationCreate(QuickEvent event) {
+        if(!event.matches("space_station_create")) return;
+        Entity e = event.read("entity", CEntity.class);
+        if(!(e instanceof CSpaceStationPart)) return;
+        spaceStations.add((CSpaceStationPart) e);
     }
 }

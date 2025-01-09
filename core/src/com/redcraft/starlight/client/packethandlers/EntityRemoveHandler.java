@@ -22,13 +22,10 @@ public class EntityRemoveHandler extends PolySyncPacketReceiver<EntityRemovePack
     public void handle(EntityRemovePacket packet) {
         Universe universe = Shared.CLIENT.get(CComponents.universe, Universe.class);
         Entity e = universe.entityFinder().searchEntity(packet.uuid,packet.x,packet.y);
-        System.out.println("remove:"+packet.uuid);
         if(e == null) {
             //later removal, to remove entities added and removed during respawn phase
-            System.out.println("later");
             universe.entityDistributor().removeEntity(()->universe.entityFinder().searchEntity(packet.uuid, packet.x, packet.y),5);
         } else {
-            System.out.println("now");
             e.remove(); //instant removal
         }
 

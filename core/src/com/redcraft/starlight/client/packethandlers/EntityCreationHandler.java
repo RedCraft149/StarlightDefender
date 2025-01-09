@@ -5,6 +5,8 @@ import com.redcraft.communication.packets.handlers.GSyncPacketReceiver;
 import com.redcraft.communication.packets.handlers.Receiver;
 import com.redcraft.starlight.client.CComponents;
 import com.redcraft.starlight.client.elements.*;
+import com.redcraft.starlight.client.elements.spacestation.CSpaceStationPart;
+import com.redcraft.starlight.server.elements.spacestation.SSpaceStationPart;
 import com.redcraft.starlight.shared.Shared;
 import com.redcraft.starlight.shared.entity.Entities;
 import com.redcraft.starlight.shared.world.Universe;
@@ -34,8 +36,12 @@ public class EntityCreationHandler extends GPolySyncPacketReceiver {
             Shared.CLIENT.get(CComponents.gameEventHandler, EventHandler.class)
                     .throwEvent(new QuickEvent("player_join").set("entity", e));
         }
+        if(e instanceof CSpaceStationPart) {
+            Shared.CLIENT.get(CComponents.gameEventHandler, EventHandler.class)
+                    .throwEvent(new QuickEvent("space_station_create").set("entity",e));
+        }
 
-        System.out.println("added entity: "+x+","+y+","+uuid+","+type);
+        if(e instanceof CSpaceStationPart) System.out.println("added entity: "+x+","+y+","+uuid+","+type);
     }
 
 

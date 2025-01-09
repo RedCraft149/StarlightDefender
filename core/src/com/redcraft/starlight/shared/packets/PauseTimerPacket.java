@@ -4,20 +4,20 @@ import com.redcraft.communication.packets.Packet;
 import com.redcraft.rlib.serial.ByteStringBuilder;
 import com.redcraft.rlib.serial.ByteStringReader;
 
-public class RespawnTimerPacket implements Packet {
+public class PauseTimerPacket implements Packet {
 
     float timer;
 
-    public RespawnTimerPacket(float timer) {
+    public PauseTimerPacket(float timer) {
         this.timer = timer;
     }
 
-    public RespawnTimerPacket() {
+    public PauseTimerPacket() {
     }
 
     @Override
     public int header() {
-        return StarlightDefenderPacketList.RESPAWN_TIMER;
+        return StarlightDefenderPacketList.PAUSE_TIMER;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class RespawnTimerPacket implements Packet {
 
     @Override
     public Packet copy() {
-        return new RespawnTimerPacket(timer);
+        return new PauseTimerPacket(timer);
     }
 
     public float time() {

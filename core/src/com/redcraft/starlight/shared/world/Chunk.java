@@ -59,6 +59,9 @@ public class Chunk extends ComponentSystemAccessor implements Castable<Chunk> {
         }
         return collection;
     }
+    public void clear() {
+        this.entities.clear();
+    }
 
     public String toString() {
         return "Chunk("+x+"|"+y+")";

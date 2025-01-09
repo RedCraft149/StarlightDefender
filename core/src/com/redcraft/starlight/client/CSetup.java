@@ -29,6 +29,9 @@ public class CSetup {
         system.sprites().add("enemy2","enemy2",4096);
         system.sprites().add("rock","rock",4096);
         system.sprites().add("mine","mine",4096);
+        system.sprites().add("space_station/solar_panel","space_station/solar_panel",4096);
+        system.sprites().add("space_station/module","space_station/module",4096);
+        system.sprites().add("space_station/connector","space_station/connector",4096);
 
         return system;
     }
@@ -40,6 +43,7 @@ public class CSetup {
         soundSystem.createSound("shot","shot");
         soundSystem.createSound("explosion","explosion2");
         soundSystem.createSound("death","death");
+        soundSystem.createSound("space_station_destroyed","space_station_destroyed");
 
         return soundSystem;
     }

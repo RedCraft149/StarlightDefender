@@ -7,7 +7,7 @@ import com.redcraft.starlight.shared.Components;
 import com.redcraft.starlight.shared.Shared;
 import com.redcraft.starlight.shared.events.HealthChangeEvent;
 import com.redcraft.starlight.shared.events.PlayerDeathEvent;
-import com.redcraft.starlight.shared.events.PlayerDeathTimerChangeEvent;
+import com.redcraft.starlight.shared.events.PlayerPauseTimerChangeEvent;
 import com.redcraft.rlib.Processable;
 import com.redcraft.rlib.events.EventHandler;
 import com.redcraft.rlib.events.QuickEvent;
@@ -26,6 +26,7 @@ public class SPlayer extends SCollisionEntity implements Processable {
 
     public float shieldsUpTime;
     public boolean shieldsUp;
+    public float pauseTimer = 0f;
 
     public SUniverse universe;
 
@@ -33,6 +34,7 @@ public class SPlayer extends SCollisionEntity implements Processable {
         super(uuid, new CircularShape(0f,0f,1/8f));
         health = 1f;
         this.universe = universe;
+        this.universe.addPlayer(this);
     }
 
     public void setHealth(float newHealth) {
@@ -50,7 +52,7 @@ public class SPlayer extends SCollisionEntity implements Processable {
     }
 
     public void damage(float damage, float x, float y) {
-        if(isDead()) return;
+        if(isDead() || isPaused()) return;
         if(deathTimer > -2.5f) return;
         if(shieldsUpTime > 0f && shieldsUp) {
             Components.getResponsibleEventHandler(getComponents()).throwEvent(
@@ -63,6 +65,9 @@ public class SPlayer extends SCollisionEntity implements Processable {
 
     public boolean isDead() {
         return health <= 0f;
+    }
+    public boolean isPaused() {
+        return pauseTimer > 0f;
     }
 
     public void addScore(int delta) {
@@ -115,12 +120,20 @@ public class SPlayer extends SCollisionEntity implements Processable {
         setHealth(1f);
         setAmmo(100);
     }
+    public void pause() {
+        pauseTimer = 5f;
+        throwEvent(new QuickEvent("player_pause").set("player",this));
+    }
 
     @Override
     public void process(float dt) {
         if(deathTimer > 0f) {
-            throwEvent(new PlayerDeathTimerChangeEvent(this,deathTimer - dt));
+            throwEvent(new PlayerPauseTimerChangeEvent(this,deathTimer - dt));
         }
+        if(pauseTimer > 0f && deathTimer <= 0f) {
+            throwEvent(new PlayerPauseTimerChangeEvent(this,pauseTimer - dt));
+        }
+        pauseTimer -= dt;
         deathTimer -= dt;
         if(shieldsUpTime > 0f && shieldsUp) {
             shieldsUpTime -= dt;

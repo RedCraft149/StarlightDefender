@@ -59,12 +59,13 @@ public class GameFrame extends Frame {
         packetHandler.addPacketHandler(new EntityCreationHandler());
         packetHandler.addPacketHandler(new EntityHealthChangeHandler());
         packetHandler.addPacketHandler(new EntityRotationHandler());
-        packetHandler.addPacketHandler(new PlayerDeathHandler());
-        packetHandler.addPacketHandler(new RespawnTimerHandler());
+        packetHandler.addPacketHandler(new PlayerPauseHandler());
+        packetHandler.addPacketHandler(new PauseTimerHandler());
         packetHandler.addPacketHandler(new PlayerScoreHandler());
         packetHandler.addPacketHandler(new ShieldHitHandler());
         packetHandler.addPacketHandler(new ShieldTimeHandler());
         packetHandler.addPacketHandler(new PlayerAmmoHandler());
+        packetHandler.addPacketHandler(new SpaceStationDestroyedHandler());
         packetHandler.addPacketHandler(new PacketHandler<Packet>() {
             @Override
             public void receive(Packet packet) {

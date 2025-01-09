@@ -11,16 +11,24 @@ import com.redcraft.starlight.util.Files;
 
 import java.util.Locale;
 
-public class DeathScreen implements Drawable, Disposable {
+public class LevelClearedScreen implements Drawable, Disposable {
+
     Texture texture;
     boolean visible;
     BitmapFont font;
 
-    float respawnTime = 0.2f;
+    float pauseTime = 0.2f;
 
-    public DeathScreen() {
-        texture = Files.texture("deathscreen");
+    public LevelClearedScreen() {
+        texture = Files.texture("level_cleared");
         font = Files.font("homevideo",30);
+    }
+
+
+    @Override
+    public void dispose() {
+        texture.dispose();
+        font.dispose();
     }
 
     @Override
@@ -29,25 +37,19 @@ public class DeathScreen implements Drawable, Disposable {
         system.begin(RenderSystem.OVERLAY);
         system.overlays().draw(texture, (Gdx.graphics.getWidth()-1000) / 2f, (Gdx.graphics.getHeight() - 400) /2f);
 
-        GlyphLayout layout = new GlyphLayout(font,formatRespawn());
-        font.draw(system.overlays(),formatRespawn(),(Gdx.graphics.getWidth()-layout.width)*0.5f,Gdx.graphics.getHeight() / 4f);
+        GlyphLayout layout = new GlyphLayout(font, formatTime());
+        font.draw(system.overlays(), formatTime(),(Gdx.graphics.getWidth()-layout.width)*0.5f,Gdx.graphics.getHeight() / 4f);
         system.end(RenderSystem.OVERLAY);
     }
 
-    @Override
-    public void dispose() {
-        texture.dispose();
-        font.dispose();
+    private String formatTime() {
+        String time = String.format(Locale.ENGLISH,"%.1f",pauseTime);
+        while (time.length()<3) time += "0";
+        return "Continuing in "+time+" seconds";
     }
 
-    private String formatRespawn() {
-        String time = String.format(Locale.ENGLISH,"%.2f",respawnTime);
-        while (time.length()<4) time += "0";
-        return "Respawn in "+time+" seconds";
-    }
-
-    public void setRespawnTime(float time) {
-        this.respawnTime = time;
+    public void setPauseTime(float time) {
+        this.pauseTime = time;
     }
 
     public void show() {

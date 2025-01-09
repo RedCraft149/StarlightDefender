@@ -23,54 +23,34 @@ public class CStarlightDefender extends ApplicationAdapter {
     InputCache inputCache;
     SoundSystem soundSystem;
     Connection connection;
-    PrintStream stream;
 
     public CStarlightDefender(Connection connection) {
         this.connection = connection;
     }
 
     public void create() {
+        Gdx.input.setCursorCatched(true);
 
-        //Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-        FileHandle file = Gdx.files.external("out.txt");
-        stream = new PrintStream(file.write(false));
-        System.setOut(stream);
-        try {
-            Gdx.input.setCursorCatched(true);
+        CSetup.loadAll();
+        Shared.CLIENT.set(CComponents.connection, connection);
+        renderSystem = CSetup.beginGraphics();
+        soundSystem = CSetup.beginSounds();
 
-            CSetup.loadAll();
-            Shared.CLIENT.set(CComponents.connection, connection);
-            renderSystem = CSetup.beginGraphics();
-            soundSystem = CSetup.beginSounds();
+        frameHandler = new FrameHandler();
+        frameHandler.add("connected", new ConnectedFrame(frameHandler)).resume();
 
-            frameHandler = new FrameHandler();
-            frameHandler.add("connected", new ConnectedFrame(frameHandler)).resume();
-
-            inputCache = new InputCache();
-            Gdx.input.setInputProcessor(inputCache);
-        } catch (Exception e) {
-            PrintWriter writer = new PrintWriter(Gdx.files.external("crash.txt").writer(false));
-            e.printStackTrace(writer);
-            writer.close();
-        }
+        inputCache = new InputCache();
+        Gdx.input.setInputProcessor(inputCache);
     }
 
     @Override
     public void render() {
-        try {
-            renderSystem.clear();
-            frameHandler.loop(Gdx.graphics.getDeltaTime(), renderSystem, inputCache);
-        } catch (Exception e) {
-            PrintWriter writer = new PrintWriter(Gdx.files.external("crash.txt").writer(false));
-            e.printStackTrace(writer);
-            writer.close();
-        }
-
+        renderSystem.clear();
+        frameHandler.loop(Gdx.graphics.getDeltaTime(), renderSystem, inputCache);
     }
 
     @Override
     public void dispose() {
-        stream.close();
         renderSystem.dispose();
         frameHandler.disposeAll();
         if (Shared.SERVER != null && Shared.SERVER.has(SConstants.server)) {

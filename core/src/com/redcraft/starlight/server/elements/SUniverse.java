@@ -6,10 +6,12 @@ import com.redcraft.communication.server.GServer;
 import com.redcraft.starlight.server.SConstants;
 import com.redcraft.starlight.server.collision.Collider;
 import com.redcraft.starlight.server.collision.CollisionAlgorithmProvider;
+import com.redcraft.starlight.server.elements.spacestation.*;
 import com.redcraft.starlight.server.world.ChunkPopulator;
 import com.redcraft.starlight.shared.Shared;
 import com.redcraft.starlight.shared.entity.Entities;
 import com.redcraft.starlight.shared.entity.Entity;
+import com.redcraft.starlight.shared.events.EntityEvents;
 import com.redcraft.starlight.shared.packets.ChunkCreationPacket;
 import com.redcraft.starlight.shared.packets.PackedEntity;
 import com.redcraft.starlight.shared.world.Chunk;
@@ -17,6 +19,7 @@ import com.redcraft.starlight.shared.world.Universe;
 import com.redcraft.rlib.Pair;
 import com.redcraft.rlib.Processable;
 import com.redcraft.rlib.events.EventHandler;
+import com.redcraft.starlight.util.RMath;
 
 import java.util.*;
 
@@ -25,9 +28,24 @@ public class SUniverse extends Universe implements Processable {
     Collider collider;
     GServer<?> server;
     ChunkPopulator populator;
+    List<SPlayer> players;
+    List<SSpaceStation> spaceStations;
 
     public SUniverse(int width, int height, GServer<?> server) {
         super(width, height, Shared.SERVER.get(SConstants.gameEventHandler, EventHandler.class));
+
+        collider = new Collider(this, CollisionAlgorithmProvider.defaultConfiguration(new Vector2(width,height)), this::onEntitiesCollide);
+        eventHandler.register(collider);
+        this.server = server;
+
+        this.players = new LinkedList<>();
+
+        populate();
+    }
+
+    public void populate() {
+        this.spaceStations = new ArrayList<>();
+
         populator = new ChunkPopulator();
         for(int x = 0; x < width; x++) {
             for(int y = 0; y < height; y++) {
@@ -36,9 +54,25 @@ public class SUniverse extends Universe implements Processable {
             }
         }
 
-        collider = new Collider(this, CollisionAlgorithmProvider.defaultConfiguration(new Vector2(width,height)), this::onEntitiesCollide);
-        eventHandler.register(collider);
-        this.server = server;
+        spaceStations = new LinkedList<>();
+        for(int i = 0; i < 3; i++) {
+            float x = RMath.random(1f/width)*width;
+            float y = RMath.random(1f/height)*height;
+            spaceStations.add(new SSpaceStation(this,x,y));
+        }
+
+        for(int i = 0; i < width()*height(); i++) {
+            server.sendToAll(createPacketForChunk(i));
+        }
+    }
+    public void restart() {
+        populate();
+        for(SPlayer player : players) {
+            entityDistributor.addEntity(player);
+            player.setPosition(0f,0f);
+            player.pause();
+            EntityEvents.positionChanged(player,0f,0f,true,eventHandler());
+        }
     }
 
     public ChunkCreationPacket createPacketForChunk(int i) {
@@ -53,7 +87,6 @@ public class SUniverse extends Universe implements Processable {
             index++;
         }
 
-        System.out.println(new ChunkCreationPacket(i,packedEntities));
         return new ChunkCreationPacket(i,packedEntities);
     }
 
@@ -62,7 +95,25 @@ public class SUniverse extends Universe implements Processable {
         for(Chunk chunk : chunks) {
             chunk.as(SChunk.class).process(dt);
         }
+        processSpaceStations(dt);
         entityDistributor.distribute();
+    }
+
+    private void processSpaceStations(float dt) {
+        if(spaceStations.isEmpty()) {
+            restart();
+            return;
+        }
+        Iterator<SSpaceStation> itr = spaceStations.iterator();
+        while (itr.hasNext()){
+            SSpaceStation spaceStation = itr.next();
+            if(spaceStation.isDestroyed()) {
+                spaceStation.destroy();
+                itr.remove();
+                continue;
+            }
+            spaceStation.process(dt);
+        }
     }
 
     public void onEntitiesCollide(Pair<SCollisionEntity, SCollisionEntity> pair) {
@@ -86,8 +137,20 @@ public class SUniverse extends Universe implements Processable {
                 owner.addScore(evaluateKillScore(other));
                 owner.addAmmo(evaluateDroppedAmmo(other));
             }
+            if(bullet.owner instanceof SSpaceStationPart) {
+                if(other instanceof SSpaceStationPart) return;
+            }
             bullet.remove();
-        } else {
+        } else if(e instanceof SSpaceStationPart) {
+            SSpaceStationPart part = (SSpaceStationPart) e;
+            if(other instanceof SBullet) {
+                SBullet bullet = (SBullet) other;
+                if(bullet.owner instanceof SPlayer) {
+                    part.remove();
+                    part.setDestroyer((SPlayer) bullet.owner);
+                }
+            }
+         } else {
             e.remove();
         }
     }
@@ -128,5 +191,13 @@ public class SUniverse extends Universe implements Processable {
         enemy.setPosition(position.x, position.y);
         entityDistributor.addEntity(enemy);
         return enemy;
+    }
+
+    public List<SPlayer> getPlayers() {
+        return players;
+    }
+
+    public void addPlayer(SPlayer player) {
+        this.players.add(player);
     }
 }

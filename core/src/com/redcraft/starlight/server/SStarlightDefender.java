@@ -41,12 +41,13 @@ public class SStarlightDefender {
         eventHandler.register(new EntityAddHandler());
         eventHandler.register(new EntityRemoveHandler());
         eventHandler.register(new EntityRotationHandler());
-        eventHandler.register(new PlayerDeathHandler());
-        eventHandler.register(new PlayerDeathTimerChangeHandler());
+        eventHandler.register(new PlayerPauseHandler());
+        eventHandler.register(new PlayerPauseTimerChangeHandler());
         eventHandler.register(new PlayerScoreHandler());
         eventHandler.register(new PlayerShieldHitHandler());
         eventHandler.register(new PlayerShiedTimeHandler());
         eventHandler.register(new PlayerAmmoHandler());
+        eventHandler.register(new SpaceStationDestroyedHandler());
 
         server.start();
         loop();

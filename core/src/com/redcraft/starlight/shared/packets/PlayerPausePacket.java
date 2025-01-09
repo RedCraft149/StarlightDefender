@@ -4,17 +4,19 @@ import com.redcraft.communication.packets.Packet;
 import com.redcraft.rlib.serial.ByteStringBuilder;
 import com.redcraft.rlib.serial.ByteStringReader;
 
-public class PlayerDeathPacket implements Packet {
+public class PlayerPausePacket implements Packet {
 
     String reason;
-    boolean respawn;
+    boolean resume;
+    boolean levelCleared;
 
-    public PlayerDeathPacket(String reason, boolean respawn) {
+    public PlayerPausePacket(String reason, boolean resume, boolean levelCleared) {
         this.reason = reason;
-        this.respawn = respawn;
+        this.resume = resume;
+        this.levelCleared = levelCleared;
     }
 
-    public PlayerDeathPacket() {
+    public PlayerPausePacket() {
     }
 
     @Override
@@ -28,7 +30,8 @@ public class PlayerDeathPacket implements Packet {
         byte[] b = reason.getBytes();
         builder.append(b.length);
         builder.append(b);
-        builder.append(respawn);
+        builder.append(resume);
+        builder.append(levelCleared);
         return builder.end();
     }
 
@@ -38,18 +41,22 @@ public class PlayerDeathPacket implements Packet {
         int length = reader.readInteger();
         byte[] data = reader.readByteArray(length);
         reason = new String(data);
-        respawn = reader.readBoolean();
+        resume = reader.readBoolean();
+        levelCleared = reader.readBoolean();
     }
 
     @Override
     public Packet copy() {
-        return new PlayerDeathPacket(reason,respawn);
+        return new PlayerPausePacket(reason,resume,levelCleared);
     }
 
     public String reason() {
         return reason;
     }
-    public boolean respawn() {
-        return respawn;
+    public boolean resume() {
+        return resume;
+    }
+    public boolean levelCleared() {
+        return levelCleared;
     }
 }
